@@ -3,13 +3,10 @@ import db from '../database/connection';
 import convertHourToMinutes from '../database/utils/convertHourToMinutes';
 
 interface ScheduleItem {
-    cidade: string;
-    local: string;
     valor: number;
-    dia_da_semana: number;
-    inicio: string;
-    termino: string;
-    estilo: string;
+    data: Date;
+    city_id: number;
+    local_id: number;
 }
 
 export default class EventsController {
@@ -22,7 +19,7 @@ export default class EventsController {
                 error: 'Missing filter to search events'
             });
         }
-       
+        
         const events = await db('class_schedule')
             .where('class_schedule.estilo', '=' , filters.estilo as string)
             .andWhere('class_schedule.dia_da_semana', '=' , filters.dia_da_semana as string )
@@ -38,6 +35,61 @@ export default class EventsController {
             nome,
             sobrenome,
             email,
+            senha,
+            avatar,
+            nome_evento,
+            descricao,
+            avatarEvento,
+            category,
+            schedule
+        } = request.body;
+
+        const getIdUsers = await db('users').insert({
+            nome,
+            sobrenome,
+            email,
+            senha,
+            avatar
+        });
+
+        const user_id = getIdUsers[0];
+
+        const category_id = await db('category')
+            .where('category.nome', '=', category)
+            .select('category.id');
+
+        const getIdEvents = await db('events').insert({
+            nome_evento,
+            descricao,
+            avatarEvento,
+            user_id,
+            category_id
+        });
+
+        const event_id = getIdEvents[0];
+
+        const classSchedule = schedule.map((scheduleItem: ScheduleItem) => {
+            return {
+                event_id,
+                local_id: scheduleItem.local_id,
+                city_id: scheduleItem.city_id,
+                valor: scheduleItem.valor,
+                data: scheduleItem.data,
+            };
+        });
+
+        await db('schedule').insert(classSchedule);
+
+        return response.send();
+    }
+
+
+
+    /*async create(request: Request, response: Response) {
+        const {
+            nome,
+            sobrenome,
+            email,
             cidade,
             senha,
             avatar,
@@ -48,7 +100,7 @@ export default class EventsController {
         } = request.body;
     
         const trx = await db.transaction();
-     
+    
         try {
             const insertUsersIds = await trx('users').insert({
                 nome,
@@ -96,5 +148,5 @@ export default class EventsController {
             })
         }
     
-    }
+    }*/
 }

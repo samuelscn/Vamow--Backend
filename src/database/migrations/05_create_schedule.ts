@@ -1,35 +1,34 @@
 import Knex from 'knex';
 
 export async function up(knex: Knex) {
-    return knex.schema.createTable('events', table => {
+    return knex.schema.createTable('schedule', table => {
         table.increments('id').primary();
-        table.string('nome_evento').notNullable();
-        table.string('descricao').notNullable();
-        table.string('avatarEvento').notNullable();
+        table.decimal('valor').notNullable;
+        table.date('data').notNullable();
 
-        table.integer('user_id')
+        table.string('local_id')
             .notNullable()
             .references('id')
-            .inTable('users')
-            .onUpdate('CASCADE')
-            .onDelete('CASCADE');
-        
-        table.integer('category_id')
-            .notNullable()
-            .references('id')
-            .inTable('category')
+            .inTable('local')
             .onUpdate('CASCADE')
             .onDelete('CASCADE');
 
-        table.integer('style_id')
+        table.string('city_id')
             .notNullable()
             .references('id')
-            .inTable('style')
+            .inTable('city')
+            .onUpdate('CASCADE')
+            .onDelete('CASCADE');
+
+        table.integer('event_id')
+            .notNullable()
+            .references('id')
+            .inTable('events')
             .onUpdate('CASCADE')
             .onDelete('CASCADE');
     });
 }
 
 export async function down(knex: Knex) {
-    return knex.schema.dropTable('events');
+    return knex.schema.dropTable('schedule');
 }
