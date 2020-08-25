@@ -4,9 +4,9 @@ import convertHourToMinutes from '../database/utils/convertHourToMinutes';
 
 interface ScheduleItem {
     valor: number;
-    data: Date;
-    city_id: number;
-    local_id: number;
+    data: number;
+    city: string;
+    local: string;
 }
 
 export default class EventsController {
@@ -41,104 +41,63 @@ export default class EventsController {
             descricao,
             avatarEvento,
             category,
+            style,
             schedule
         } = request.body;
 
-        const getIdUsers = await db('users').insert({
-            nome,
-            sobrenome,
-            email,
-            senha,
-            avatar
-        });
-
-        const user_id = getIdUsers[0];
-
-        const category_id = await db('category')
-            .where('category.nome', '=', category)
-            .select('category.id');
-
-        const getIdEvents = await db('events').insert({
-            nome_evento,
-            descricao,
-            avatarEvento,
-            user_id,
-            category_id
-        });
-
-        const event_id = getIdEvents[0];
-
-        const classSchedule = schedule.map((scheduleItem: ScheduleItem) => {
-            return {
-                event_id,
-                local_id: scheduleItem.local_id,
-                city_id: scheduleItem.city_id,
-                valor: scheduleItem.valor,
-                data: scheduleItem.data,
-            };
-        });
-
-        await db('schedule').insert(classSchedule);
-
-        return response.send();
-    }
-
-
-
-    /*async create(request: Request, response: Response) {
-        const {
-            nome,
-            sobrenome,
-            email,
-            cidade,
-            senha,
-            avatar,
-            nomeEvento,
-            descricao,
-            avatarEvento,
-            schedule
-        } = request.body;
-    
         const trx = await db.transaction();
-    
+
         try {
-            const insertUsersIds = await trx('users').insert({
+            const getIdUsers = await trx('users').insert({
                 nome,
                 sobrenome,
                 email,
-                cidade,
                 senha,
-                avatar,
+                avatar
             });
-        
-            const user_id = insertUsersIds[0];
-        
-            const EventsIds = await trx('events').insert({
-                nomeEvento,
+
+            const user_id = getIdUsers[0];
+
+            const category_id = await trx('category')
+                .where('category.nome', '=', category as string)
+                .select('category.id');
+
+            const style_id = await trx('style')
+                .where('style.nome', '=', style as string)
+                .select('style.id');
+
+            const getIdEvents = await trx('events').insert({
+                nome_evento,
                 descricao,
                 avatarEvento,
                 user_id,
+                category_id,
+                style_id
             });
-        
-            const events_id = EventsIds[0];
-        
-            const classSchedule = schedule.map((scheduleItem: ScheduleItem) => {
+
+            const event_id = getIdEvents[0];
+
+            const classSchedule = schedule.map( (scheduleItem: ScheduleItem) => {
+                const local_id =  trx('local')
+                    .where('local.nome', '=', scheduleItem.local)
+                    .select('local.id');
+
+                const city_id =  trx('city')
+                    .where('city.nome', '=', scheduleItem.city)
+                    .select('city.id');
+
                 return {
-                    events_id,
-                    cidade: scheduleItem.cidade,
-                    local: scheduleItem.local,
-                    estilo: scheduleItem.estilo,
+                    event_id,
+                    local_id,
+                    city_id,
                     valor: scheduleItem.valor,
-                    dia_da_semana: scheduleItem.dia_da_semana,
-                    inicio: convertHourToMinutes(scheduleItem.inicio),
-                    termino: convertHourToMinutes(scheduleItem.termino)
+                    data: scheduleItem.data,
                 };
             });
-        
-            await trx('class_schedule').insert(classSchedule);
-            
+
+            await trx('schedule').insert(classSchedule);
             await trx.commit();
-        
+            
             return response.status(201).send();
         } catch(err) {
             await trx.rollback();
@@ -147,6 +106,5 @@ export default class EventsController {
                 error: 'Unexpected error while creating new event'
             })
         }
-    
-    }*/
+    }
 }
