@@ -9,6 +9,14 @@ interface ScheduleItem {
     local: string;
 }
 
+interface CategoryItem {
+    id: number;
+}
+
+interface StyleItem {
+    id: number;
+}
+
 export default class EventsController {
 
     async index(request: Request, response: Response) {
@@ -58,13 +66,21 @@ export default class EventsController {
 
             const user_id = getIdUsers[0];
 
-            const category_id = await trx('category')
+            const getIdCategory = await trx('category')
                 .where('category.nome', '=', category as string)
                 .select('category.id');
 
-            const style_id = await trx('style')
-                .where('style.nome', '=', style as string)
-                .select('style.id');
+            const getIdStyle = await trx('style')
+                .where('style.nome', style)
+                .select('id');
+
+            const category_id = getIdCategory.map((categoryItem: CategoryItem) => {
+                return categoryItem.id;
+            });
+
+            const style_id = getIdStyle.map((styleItem: StyleItem) => {
+                return styleItem.id;
+            });
 
             const getIdEvents = await trx('events').insert({
                 nome_evento,
