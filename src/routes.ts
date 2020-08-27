@@ -16,10 +16,22 @@ const localController = new LocalController();
 
 routes.post('/events', eventsController.create);
 routes.get('/events', eventsController.index);
+
 routes.post('/city', cityController.create);
+routes.get('/city', cityController.index);
+routes.get('/city/:stateId', cityController.getCity);
+
 routes.post('/state', stateController.create);
+routes.get('/state', stateController.index);
+
 routes.post('/category', categoryController.create);
+routes.get('/category', categoryController.index);
+
 routes.post('/style', styleController.create);
+routes.get('/style', styleController.index);
+
 routes.post('/local', localController.create);
+routes.get('/local', localController.index);
+routes.get('/local/:cityId', localController.getLocal);
 
 export default routes;

@@ -101,13 +101,9 @@ export default class EventsController {
                 .where('style.nome', style)
                 .select('id');
 
-            const category_id = getIdCategory.map((categoryItem: CategoryItem) => {
-                return categoryItem.id;
-            });
+            const category_id = getIdCategory[0].id;
 
-            const style_id = getIdStyle.map((styleItem: StyleItem) => {
-                return styleItem.id;
-            });
+            const style_id = getIdStyle[0].id;
 
             const getIdEvents = await trx('events').insert({
                 nome_evento,
