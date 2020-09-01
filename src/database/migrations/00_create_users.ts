@@ -7,7 +7,7 @@ export async function up(knex: Knex) {
         table.string('sobrenome').notNullable();
         table.string('email').notNullable().unique();
         table.string('senha').notNullable();
-        table.string('avatar').notNullable();
+        table.string('avatar');
     });
 }
 

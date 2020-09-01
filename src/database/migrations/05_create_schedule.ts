@@ -4,7 +4,9 @@ export async function up(knex: Knex) {
     return knex.schema.createTable('schedule', table => {
         table.increments('id').primary();
         table.decimal('valor').notNullable;
-        table.date('data').notNullable();
+        table.string('month').notNullable();
+        table.integer('day').notNullable();
+        table.integer('year').notNullable();
 
         table.string('local_id')
             .notNullable()
