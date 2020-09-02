@@ -10,7 +10,8 @@
  - Query Params: Paginação, filtros, ordenação => request.query;
 
 # Controle de versão
-  Migration
+ - Migration
+ - Git
 
 # Casos de Uso
 # Funcionalidades
@@ -23,4 +24,23 @@
     - Rota para criar um evento;
     - Rota para listar um evento;
         - Filtrar por Dia, Cidade, Estilo;
+
+## Banco de Dados
+    - SQLite3 fazendo utilização do Knex;
+
+## Tabelas
+    - Category (Catégorias)
+    - City (Cidades)
+    - Events (Eventos)
+    - Local (Locais)
+    - Schedule (Cronograma de cada evento)
+    - State (Estado Ex: MG, SP e etc...)
+    - Style (Estilo de cada evento)
+    - Users (Usuários)
+
+## Como iniciar a API
+  - Comandos:
+    - yarn start (se estiver utilizando yarn)
+    - npm start (se estiver utilizando npm)
+    - yarn knex:migrate ou npm knex:migrate
     
