@@ -29,4 +29,15 @@ export default class LocalController {
 
         return response.send();
     }
+
+    async getlocaldata(request: Request, response: Response) {
+        const { id } = request.body;
+        
+        const getLocals = await db('local')
+            .where('local.id', '=', id)
+            .select()
+        
+        return response.json(getLocals)
+        
+    }
 }

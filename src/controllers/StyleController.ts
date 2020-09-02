@@ -18,4 +18,14 @@ export default class StyleController {
 
         return response.send();
     }
+
+    async getstyleforid(request: Request, response: Response) {
+        const { styleId } = request.params;
+
+        const getStyle = await db('style')
+            .where('style.id', '=', styleId)
+            .select();
+
+        response.json(getStyle);
+    }
 }

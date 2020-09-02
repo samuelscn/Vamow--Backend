@@ -19,11 +19,11 @@ export default class EventsController {
     async index(request: Request, response: Response) {
         const filters = request.query;
 
-        const data = filters.data as string;
+        const month = filters.month as string;
         const style = filters.style as string;
         const city = filters.city as string;
 
-        if (!filters.data || !filters.style || !filters.city) {
+        if (!filters.month || !filters.style || !filters.city) {
             return response.status(400).json ({
                 error: 'Missing filter to search events'
             });
@@ -45,14 +45,24 @@ export default class EventsController {
             return styleItem.id
         });
 
-        const filtro = await db('events')
-            .where('events.style_id', '=', style_id)
-            .join('schedule', 'events.id', '=', 'schedule.event_id')
-            .where('schedule.city_id', '=', city_id)
-            .whereRaw('`schedule`.`data` = ??', [Number(data)])
-            .select(['schedule.*', 'events.*']);
+        if (month != '1') {
+            const filtro = await db('events')
+                .where('events.style_id', '=', style_id)
+                .join('schedule', 'events.id', '=', 'schedule.event_id')
+                .where('schedule.city_id', '=', city_id)
+                .where('schedule.month', '=', month)
+                .select(['events.*', 'schedule.*']);
 
-        return response.json(filtro);
+                return response.json(filtro);
+        } else {
+            const filtro = await db('events')
+                .where('events.style_id', '=', style_id)
+                .join('schedule', 'events.id', '=', 'schedule.event_id')
+                .where('schedule.city_id', '=', city_id)
+                .select(['events.*', 'schedule.*']);
+            
+            return response.json(filtro);
+        }
     }
 
     async create(request: Request, response: Response) {

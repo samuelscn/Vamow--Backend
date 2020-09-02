@@ -33,10 +33,13 @@ routes.get('/category', categoryController.index);
 
 routes.post('/style', styleController.create);
 routes.get('/style', styleController.index);
+routes.get('/style/:styleId', styleController.getstyleforid);
 
 routes.post('/local', localController.create);
 routes.get('/local', localController.index);
 routes.get('/local/:cityId', localController.getLocal);
+
+routes.post('/local/data', localController.getlocaldata);
 
 routes.get('/users/:email/:senha', usersController.authenticated);
 routes.post('/users', usersController.create);
