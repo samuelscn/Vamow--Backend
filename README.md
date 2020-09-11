@@ -40,7 +40,7 @@
 
 ## Como iniciar a API
   - Comandos:
-    - yarn start (se estiver utilizando yarn)
-    - npm start (se estiver utilizando npm)
-    - yarn knex:migrate ou npm knex:migrate
+    - `yarn start` (se estiver utilizando yarn)
+    - `npm start` (se estiver utilizando npm)
+    - `yarn knex:migrate ou npm knex:migrate`
     
